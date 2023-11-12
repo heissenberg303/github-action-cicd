@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mycovidapp
+  labels:
+    app: mycovidapp
+spec:
+  ports: # 1) How send traffic to port
+  - port: 80
+    protocol: TCP
+    name: covid # any name
+  selector: # 2) How load balancer know which port load balancer send traffic to
+    app: mycovidapp
+    tier: backend
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mycoviddeployment
+  labels:
+    app: mycovidapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mycovidapp
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: mycovidapp
+        tier: backend
+    spec: # Pod spec
+      containers:
+      - name: mycovidcontainer
+        image: heissenberg/covid:latest
+        ports:
+        - containerPort: 80
