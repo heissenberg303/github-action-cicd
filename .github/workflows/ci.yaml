@@ -6,12 +6,15 @@ env:
   IMAGE_NAME: heissenberg/covid-app
   IMAGE_TAG: golang-app-1.0
   SECURE_LOG_LEVEL: 'debug'
+  USERNAME: ${{ secrets.REGISTRY_USER }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Create annotation for build error
+      run: echo "username is $USERNAME"
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Login to DockerHub
